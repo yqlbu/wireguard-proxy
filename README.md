@@ -1,3 +1,1 @@
 # wireguard-proxy
-
-# nihaoma
