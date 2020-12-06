@@ -10,7 +10,7 @@
 
 \*\*\* Update Time: 2020/12/06
 
-This repo aims to give you clear instructions on how to install, config, and use wireguard in your local network. The [Wiki](#docs) below will guide you to deploy [Wireguard Server](https://www.wireguard.com/) on the Cloud.
+This repo aims to give you clear instructions on how to install, config, and use wireguard in your local network. The Wiki below will guide you to deploy [Wireguard Server](https://www.wireguard.com/) on the Cloud.
 
 ## Introduction
 
