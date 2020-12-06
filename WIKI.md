@@ -2,6 +2,24 @@
 
 This tutorial was created and tested using Ubuntu 18.04 on Bandwagon VPS Hosting. It will likely work fine with other Linux distributions and any other Cloud Services Providers, but some modifications may be needed.
 
+This tutorial will walk you through how to connect your device such as a mobile phone, a tablet, or a latop to your home network when you are outside of your home network via Wireguard Proxy.
+
+Workflow Chart
+
+```shell
+10.77.0.1 (Wireguard Server on VPS) <--------+ 10.77.0.X (Wireguard Client)
+              +
+              |
+              v
+10.77.0.2 (NAS or any other devices within the home network)
+              +
+              |
+              v
+10.10.10.0/24 (Home Network)
+```
+
+View details about the workflow [here](#workflow)
+
 ## Table of Contents
 
 - [Quick Deploy](#quick-deploy)
