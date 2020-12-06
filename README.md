@@ -14,7 +14,7 @@ This repo aims to give you clear instructions on how to install, config, and use
 
 ## Introduction
 
-**[WireGuard](https://www.wireguard.com/)** is a free and open-source software application and communication protocol that implements virtual private network techniques to create secure point-to-point connections in routed or bridged configurations.
+[WireGuard](https://www.wireguard.com/) is a free and open-source software application and communication protocol that implements virtual private network techniques to create secure point-to-point connections in routed or bridged configurations.
 
 ## Docs
 
