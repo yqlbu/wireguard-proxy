@@ -184,6 +184,8 @@ Notes:
 - 10.77.0.0/24 is the virtual local network created by Wireguard Server
 - 10.10.10.0/24 is the local home network
 
+---
+
 ### Server Setup
 
 Instantiate a VM instance from your Cloud Service Provider. This tutorial was created and tested using Ubuntu 18.04 on [Bandwagon](https://bwh88.net/) VPS Hosting. It will likely work fine with other Linux distributions.
@@ -282,6 +284,8 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 The rule above is to allow Wireguard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by wireguard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
 
+---
+
 ### Client Setup
 
 Continue the following steps on your VPS Server:
@@ -348,7 +352,7 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 
 As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
 
-### Test Connection
+#### Test Connection
 
 To test that the server works run `$ wg-quick up wg0` to bring up the interface. Running `$ wg-quick down` will bring the interface down.
 
@@ -381,6 +385,8 @@ $ ping 10.10.10.85
 ![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/IMAGE%202020-12-06%2018:22:48.jpg?raw=true)
 
 If all the configuration has been setup correctly, you should see that the VPS server is connected to the home network via the Wireguard VPN tunnel
+
+---
 
 ### Network Address Translation
 
