@@ -14,12 +14,22 @@ This repo aims to give you clear instructions on how to install, config, and use
 
 ## Introduction
 
-**[WireGuard](https://www.wireguard.com/)** is a free and open-source software application and communication protocol that implements virtual private network (VPN) techniques to create secure point-to-point connections in routed or bridged configurations. It is run as a module inside the Linux kernel (or the BSD kernel), and aims for better performance and more power saving than the IPsec and OpenVPN tunneling protocols.
+**[WireGuard](https://www.wireguard.com/)** is a free and open-source software application and communication protocol that implements virtual private network techniques to create secure point-to-point connections in routed or bridged configurations.
 
 ## Docs
 
-- [Wiki(EN)]
+- [Wiki(EN)](https://github.com/yqlbu/wireguard-proxy/wiki)
 - [Wiki(CN)]
+
+## Affirmation
+
+- This repo is only for educational purposes and technical discussion
+- Please do not share this repo and any public social media, the author does not account for any responsibilities
+- The author is not responsible for any illegal usages and violation activities
+
+## Supported Platforms
+
+As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
 
 ## Telegram Groupchat
 
