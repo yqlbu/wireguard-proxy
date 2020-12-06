@@ -1,6 +1,6 @@
 ## Artifact
 
-This tutorial was created and tested using Ubuntu 18.04 on Bandwagon VPS Hosting. It will likely work fine with other distributions and any other Cloud Services Providers, but some modifications may be needed.
+This tutorial was created and tested using Ubuntu 18.04 on Bandwagon VPS Hosting. It will likely work fine with other Linux distributions and any other Cloud Services Providers, but some modifications may be needed.
 
 ## Table of Contents
 
@@ -56,7 +56,7 @@ MTU = 1420
 [Peer]
 # client
 PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.2/24 <You may config as many LAN as you want>
+AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 # Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 ```
 
@@ -107,11 +107,11 @@ The rule above is to allow Wireguard to take any traffic from your home network 
 
 ---
 
-Installation Client Software
+Install Client Software
 
 As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
 
-Turn on Wireguard and enable auto start at boot
+Turn on Wireguard and enable auto start at boot on your Wireguard Server
 
 ```bash
 $ wg-quick up wg0
@@ -140,13 +140,20 @@ peer: <Peer Public Key>
   transfer: 9.52 MiB received, 4.01 MiB sent
 ```
 
----
-
 ## Documentation
 
-### Workflow
-
 ### Get Ready
+
+What to prepare
+
+- a VPS from a Cloud Service provider
+- a device that you want to be accessed to such as a NAS from outside of your home network
+
+What to achieve
+
+- Connect your device such as a mobile phone, a tablet, or a latop to your home network when you are outside of your home network via Wireguard Proxy
+
+### Workflow
 
 ### Server Setup
 
