@@ -155,6 +155,10 @@ What to achieve
 
 ### Workflow
 
+![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/Screen%20Shot%202020-12-06%20at%205.22.10%20PM.png?raw=true)
+
+- 10.10.10.
+
 ### Server Setup
 
 #### Installation
