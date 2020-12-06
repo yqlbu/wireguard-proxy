@@ -16,8 +16,11 @@ This tutorial was created and tested using Ubuntu 18.04 on Bandwagon VPS Hosting
     - [Test Connection](#test-connection)
   - [Client Setup](#client-setup)
     - [Client Side Configuration](#client-side-configuration)
+    - [Modify Server Side Configuration](#modify-server-side-configuration)
+    - [Client Side Software Installation](#client-side-software-installation)
   - [Network Address Translation](#network-address-translation)
     - [Wireguard NAT Workflow](#wireguard-nat-workflow)
+    - [Multiple Peer Connections](#multiple-peer-connections)
     - [Multiple LAN NAT Support](#multiple-lan-nat-support)
 
 - [Reference](#reference)
@@ -357,6 +360,10 @@ Now test the connection from the VPS to the home network
 $ ping 10.10.10.85
 ```
 
+![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/IMAGE%202020-12-06%2018:22:48.jpg?raw=true)
+
+If all the configuration has been setup correctly, you should see that the VPS server is connected to the home network via the Wireguard VPN tunnel
+
 ### Network Address Translation
 
 #### Wireguard NAT Workflow
@@ -368,19 +375,80 @@ From the above configuration, noted that `AllowIPs` is recognized as the routing
 
 ```shell
 10.77.0.1 (Wireguard Server) <--------+ 10.77.0.X (Wireguard Client)
-          +
-          |
-          v
+              +
+              |
+              v
 10.77.0.2 (NAS or any other devices within the home network)
-          +
-          |
-          v
+              +
+              |
+              v
 10.10.10.0/24 (Home Network)
 ```
 
+#### Multiple Peer Connections
+
+You may add as many peers as you want, just make sure to add them all in the VPS server as the template shown below:
+
+template
+
+```config
+[Interface]
+PrivateKey =
+Address = 10.77.0.1/24
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERA$
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERA$
+ListenPort =
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# Device One
+PublicKey =
+AllowedIPs = 10.77.0.2/24
+
+[Peer]
+# Device Two
+PublicKey =
+AllowedIPs = 10.77.0.3/24
+```
+
+Notes:
+
+- Each peer is associated with one unique key pair including one public key and one private key
+- To generate a new key pair, simply use the command `$ wg genkey | tee privatekey | wg pubkey > publickey`
+
 #### Multiple LAN NAT Support
 
+If you want to configure more than one LAN in your local network, you may take
+[Wireguard NAT Workflow](#wireguard-nat-workflow) as a reference and modify the Peer configuration on `/etc/wireguard/wg0.conf` as the template shown below:
+
+template
+
+```config
+[Interface]
+PrivateKey =
+Address = 10.77.0.1/24
+PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+ListenPort = 13789
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# Client One
+PublicKey =
+AllowedIPs = 10.77.0.2/32
+
+[Peer]
+# Client Two
+PublicKey =
+AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs with comma to split them>
+```
+
 ## Reference
+
+- [WireGuard Official Website](https://www.wireguard.com/)
+- [Video Tutorial from lawrencesystems on YouTube](https://forums.lawrencesystems.com/uploads/default/original/2X/e/e0ebbcd8936a498c8fe3bc88f1c6b7f7333ce9cf.jpeg)
 
 ## License
 
