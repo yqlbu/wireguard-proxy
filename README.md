@@ -33,4 +33,4 @@ As for now, Wireguard is supported over a varity of platforms. The software is n
 
 ## Telegram Groupchat
 
-- [UNRAID (ZN) Discussion](https://t.me/unraid_zh)
+- [UNRAID (CN) Discussion](https://t.me/unraid_zh)
