@@ -176,7 +176,7 @@ What to achieve
 
 ### Workflow
 
-![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/Screen%20Shot%202020-12-06%20at%205.25.45%20PM.png?raw=true)
+![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/Screen%20Shot%202020-12-06%20at%206.48.17%20PM.png?raw=true)
 
 Notes:
 
