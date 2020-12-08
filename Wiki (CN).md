@@ -38,7 +38,7 @@
     - [客户端软件安装](#客户端软件安装)
     - [连接通路测试](#测试连接)
   - [网络地址转换](#网络地址转换)
-    - [WireGuard NAT 网络逻辑框架](#Wireguard NAT工作流程)
+    - [WireGuard NAT 网络逻辑框架](#Wireguard-NAT工作流程)
     - [多链路对等连接](#多链路对等连接)
     - [多局域网NAT支持](#多局域网NAT支持)
 - [参考](#参考)
@@ -446,7 +446,7 @@ AllowedIPs = 10.77.0.3/24
 
 #### 多局域网NAT支持
 
-如果要在本地网络中配置多个LAN，则可以将 [WireGuard NAT工作流](https://github.com/yqlbu/wireguard-proxy/wiki#wireguard-nat-workflow)作为参考，并修改Peer配置，`/etc/wireguard/wg0.conf`如下所示：
+如果要在本地网络中配置多个LAN，则可以将 [WireGuard NAT工作流](#工作流程) 作为参考，并修改Peer配置，`/etc/wireguard/wg0.conf`如下所示：
 
 配置模板
 
