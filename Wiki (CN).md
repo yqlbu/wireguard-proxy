@@ -8,7 +8,7 @@
 
  具体的网络逻辑框架如下：
 
-```
+```bash
 10.77.0.1 (Wireguard Server on VPS) <--------+ 10.77.0.X (Wireguard Client)
               +
               |
@@ -126,7 +126,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 客户端软件安装
 
-至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在“[安装页面”](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
+至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在 [安装页面](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
 
 打开Wireguard服务并在你承载wireguard服务的服务器引导时自动启动
 
@@ -341,7 +341,7 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 
 #### 客户端软件安装
 
-至今为止，多种不同的平台已经支持Wireguard 。例如Windows，macOS，Android，iOS和许多Linux发行版系统。您可以在“[安装页面”](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
+至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在 [安装页面](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
 
 #### 测试连接
 
