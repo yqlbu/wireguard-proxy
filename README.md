@@ -18,8 +18,8 @@ This repo aims to give you clear instructions on how to install, config, and use
 
 ## Docs
 
-- [Wiki (EN)](https://github.com/yqlbu/wireguard-proxy/wiki)
-- [Wiki (CN)]()
+- [Wiki (EN)](https://github.com/yqlbu/wireguard-proxy/wiki/Wiki-(EN))
+- [Wiki (CN)](https://github.com/yqlbu/wireguard-proxy/wiki/Wiki-(%E4%B8%AD%E6%96%87-))
 
 ## Affirmation
 

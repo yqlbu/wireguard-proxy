@@ -55,7 +55,7 @@ $ cat privatekey
 $ cat publickey
 ```
 
-Create the /etc/wireguard/wg0.conf
+Create the `/etc/wireguard/wg0.conf`
 
 ```bash
 $ vim /etc/wireguard/wg0.conf
@@ -92,7 +92,7 @@ $ cat publickey_client
 
 ---
 
-Create the /etc/wireguard/client.conf
+Create the `/etc/wireguard/client.conf`
 
 ```bash
 $ vim /etc/wireguard/client.conf
@@ -187,7 +187,7 @@ Notes:
 
 ### Server Setup
 
-Instantiate a VM instance from your Cloud Service Provider. This tutorial was created and tested using Ubuntu 18.04 on [Bandwagon](https://bwh88.net/) VPS Hosting. It will likely work fine with other Linux distributions.
+Instantiate a VM instance from your Cloud Service Provider. This tutorial was created and tested using Ubuntu 18.04 on [Bandwagon](https://bandwagonhost.com/aff.php?aff=63096) VPS Hosting. It will likely work fine with other Linux distributions.
 
 Specs:
 
@@ -220,7 +220,7 @@ Log into server and make sure system is up to date
 $ apt-get update && apt-get upgrade -y
 ```
 
-Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file /etc/sysctl.conf and change and uncomment to the line that says ```net.ipv4.ip_forward=1```
+Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file `/etc/sysctl.conf` and change and uncomment to the line that says ```net.ipv4.ip_forward=1```
 
 Now reboot or run ```$ sysctl -p``` to activate the changes.
 
@@ -470,7 +470,7 @@ AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs 
 
 ## Reference
 
-- [WireGuard Official Website](https://www.wireguard.com/)
+- [WireGuard Official Website](https://bandwagonhost.com/aff.php?aff=63096)
 - [Video Tutorial from lawrencesystems on YouTube](https://forums.lawrencesystems.com/uploads/default/original/2X/e/e0ebbcd8936a498c8fe3bc88f1c6b7f7333ce9cf.jpeg)
 
 ## License
