@@ -48,7 +48,7 @@
 
 将 WireGuard 部署到您的VPS上
 
-```
+```bash
 $ sudo apt-get update && apt-get upgrade -y
 $ sudo apt-get install wireguard -y
 $ wg genkey | tee privatekey | wg pubkey > publickey
@@ -58,13 +58,13 @@ $ cat publickey
 
 创建该路径文件 `/etc/wireguard/wg0.conf`
 
-```
+```bash
 $ vim /etc/wireguard/wg0.conf
 ```
 
 该文件模板如下：
 
-```
+```config
 [Interface]
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
@@ -85,7 +85,7 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 
 客户端私钥不同于服务器私钥，您可以运行以下命令来生成一对新的公钥和私钥：
 
-```
+```bash
 $ wg genkey | tee privatekey_client | wg pubkey > publickey_client
 $ cat privatekey_client
 $ cat publickey_client
@@ -93,13 +93,13 @@ $ cat publickey_client
 
 创建该路径文件` /etc/wireguard/client.conf`
 
-```
+```bash
 $ vim /etc/wireguard/client.conf
 ```
 
 该文件模板如下：
 
-```
+```config
 [Interface]
 PrivateKey = <Client Private Key Goes Here>
 PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE;
@@ -117,7 +117,7 @@ PersistentKeepalive = 25
 
 请注意以上命令中所包含的其中两行命令：
 
-```
+```config
 PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE;
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
@@ -130,7 +130,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 打开Wireguard服务并在你承载wireguard服务的服务器引导时自动启动
 
-```
+```bash
 $ wg-quick up wg0
 $ systemctl enable wg-quick@wg0
 ```
@@ -141,7 +141,7 @@ $ systemctl enable wg-quick@wg0
 
 在 WireGuard Server上输入以下命令，以确保链路已经被激活且稳定运行：
 
-```
+```bash
 $ wg
 
 # output
@@ -186,7 +186,7 @@ peer: <Peer Public Key>
 
 系统版本预览：
 
-```
+```bash
 root@quick-beep-1:~# screenfetch
          _,met$$$$$gg.           root@quick-beep-1.localdomain
       ,g$$$$$$$$$$$$$$$P.        OS: Debian 10 buster
@@ -210,7 +210,7 @@ root@quick-beep-1:~# screenfetch
 
 用终端SSH到你的VPS上，确保系统各个组件已经升级到最新。
 
-```
+```bash
 $ apt-get update && apt-get upgrade -y
 ```
 
@@ -220,7 +220,7 @@ $ apt-get update && apt-get upgrade -y
 
 安装 WireGuard
 
-```
+```bash
 $ sudo apt-get install wireguard -y
 ```
 
@@ -230,7 +230,7 @@ $ sudo apt-get install wireguard -y
 
 对服务器生成密钥对，命令如下：
 
-```
+```bash
 $ cd /etc/wireguard
 $ wg genkey | tee privatekey | wg pubkey > publickey
 $ cat privatekey
@@ -239,7 +239,7 @@ $ cat publickey
 
 为客户端生成另一个密钥对，命令如下：
 
-```
+```bash
 $ wg genkey | tee privatekey_client | wg pubkey > publickey_client
 $ cat privatekey_client
 $ cat publickey_client
@@ -249,7 +249,7 @@ $ cat publickey_client
 
 创建文件  文件路径及名称为:/etc/wireguard/wg0.conf
 
-```
+```bash
 $ vim /etc/wireguard/wg0.conf
 ```
 
@@ -257,7 +257,7 @@ $ vim /etc/wireguard/wg0.conf
 
 模板如下：
 
-```
+```config
 [Interface]
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
@@ -270,7 +270,7 @@ MTU = 1420
 
 请注意上面配置中的如下的两行：
 
-```
+```config
 PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE;
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
@@ -287,13 +287,13 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 命令如下：
 
-```
+```bash
 $ vim /etc/wireguard/client.conf
 ```
 
 文件模板:
 
-```
+```config
 [Interface]
 PrivateKey = <Client Private Key Goes Here>
 PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE;
@@ -311,7 +311,7 @@ PersistentKeepalive = 25
 
 请注意上面配置中的如下的两行：
 
-```
+```config
 PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE;
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
@@ -322,7 +322,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 模板
 
-```
+```config
 [Interface]
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
@@ -349,13 +349,13 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 
 此命令会打开wg0口：
 
-```
+```bash
 $ wg-quick up wg0
 ```
 
 此命令会关闭wireguard服务：
 
-```
+```bash
 $ wg-quick down
 ```
 
@@ -363,7 +363,7 @@ $ wg-quick down
 
 在Wireguard Server上输入以下命令，以确保链路已经被激活且稳定运行：
 
-```
+```bash
 $ wg
 
 # output
@@ -381,7 +381,7 @@ peer: <Peer Public Key>
 
 现在测试从VPS到家庭网络的连接状况：
 
-```
+```bash
 $ ping 10.10.10.85
 ```
 
@@ -400,7 +400,7 @@ $ ping 10.10.10.85
 - 当数据包的目的地到达`AllowIPs`所属网络时，该包将通过Wireguard VPN隧道发送
 - 当数据包的目的地未到达`AllowIPs`所属网络时，该包将被丢弃
 
-```
+```bash
 10.77.0.1 (Wireguard Server) <--------+ 10.77.0.X (Wireguard Client)
               +
               |
@@ -418,7 +418,7 @@ $ ping 10.10.10.85
 
 模板
 
-```
+```config
 [Interface]
 PrivateKey =
 Address = 10.77.0.1/24
@@ -452,7 +452,7 @@ AllowedIPs = 10.77.0.3/24
 
 
 
-```
+```config
 [Interface]
 PrivateKey =
 Address = 10.77.0.1/24
