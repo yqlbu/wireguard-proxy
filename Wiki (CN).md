@@ -20,7 +20,7 @@
 10.10.10.0/24 (Home Network)
 ```
 
-关于 WireGuard 具体的网络逻辑框架介绍：[here](https://github.com/yqlbu/wireguard-proxy/wiki#workflow)
+关于 WireGuard 具体的网络逻辑框架介绍：[点击此处](#工作流程)
 
 ## 目录
 
