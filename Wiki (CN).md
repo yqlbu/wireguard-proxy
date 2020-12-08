@@ -1,12 +1,10 @@
-中文 Wiki
-
-# **home**
+# 前言
 
 一款帮你轻松连接回家的神器
 
-  本教程搭建和测试基于UBUNTU 18.04系统，在云上搭建，VPS 提供商为搬瓦工。wireguard应该可以在其他的云服务商所提供的其他LINUX发行版系统上运行，但是需要做一些细节上的调整。
+本教程搭建和测试基于Ubuntu 18.04系统，在云上搭建，VPS 提供商为搬瓦工。wireguard应该可以在其他的云服务商所提供的其他LINUX发行版系统上运行，但是需要做一些细节上的调整。
 
-  本教程将引导您知道:当您外出时，如何通过 wireguard-proxy 将手机，平板电脑或笔记本电脑等设备连接到家庭网络。
+ 本教程将引导您知道:当您外出时，如何通过 wireguard-proxy 将手机，平板电脑或笔记本电脑等设备连接到家庭网络。
 
  具体的网络逻辑框架如下：
 
@@ -22,7 +20,7 @@
 10.10.10.0/24 (Home Network)
 ```
 
-关于wireguard具体的网络逻辑框架介绍：[here](https://github.com/yqlbu/wireguard-proxy/wiki#workflow)
+关于 WireGuard 具体的网络逻辑框架介绍：[here](https://github.com/yqlbu/wireguard-proxy/wiki#workflow)
 
 ## 目录
 
