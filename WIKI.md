@@ -40,7 +40,6 @@ View details about the workflow [here](#workflow)
     - [Wireguard NAT Workflow](#wireguard-nat-workflow)
     - [Multiple Peer Connections](#multiple-peer-connections)
     - [Multiple LAN NAT Support](#multiple-lan-nat-support)
-
 - [Reference](#reference)
 - [License](#license)
 
@@ -49,7 +48,7 @@ View details about the workflow [here](#workflow)
 Deploy Wireguard on your VPS
 
 ```bash
-$ sudo apt-get update && apt-get upgrade
+$ sudo apt-get update && apt-get upgrade -y
 $ sudo apt-get install wireguard -y
 $ wg genkey | tee privatekey | wg pubkey > publickey
 $ cat privatekey
@@ -124,7 +123,7 @@ PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o e
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
 
-The rule above is to allow Wireguard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by wireguard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
+The rules above are to allow WireGuard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by wireguard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
 
 ---
 
@@ -221,11 +220,11 @@ Log into server and make sure system is up to date
 $ apt-get update && apt-get upgrade -y
 ```
 
-Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file /etc/sysctl.conf and change and uncomment to the line that says **net.ipv4.ip_forward=1**
+Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file /etc/sysctl.conf and change and uncomment to the line that says ```net.ipv4.ip_forward=1```
 
-Now reboot or run sysctl -p to activate the changes.
+Now reboot or run ```$ sysctl -p``` to activate the changes.
 
-Install wireguard
+Install WireGuard
 
 ```bash
 $ sudo apt-get install wireguard -y
@@ -233,7 +232,7 @@ $ sudo apt-get install wireguard -y
 
 #### Generate Keys
 
-Go to to the Wireguard config cd /etc/wiregaurd and then run the following command to generate the public and private keys for the server.
+Go to the Wireguard config cd /etc/wiregaurd and then run the following command to generate the public and private keys for the server.
 
 Generate a key pair for the Server
 
@@ -282,7 +281,7 @@ PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o e
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
 
-The rule above is to allow Wireguard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by wireguard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
+The rule above is to allow WireGuard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by WireGuard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
 
 ---
 
@@ -323,7 +322,7 @@ PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o e
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
 
-The rule above is to allow Wireguard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by wireguard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
+The rule above is to allow WireGuard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by WireGuard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
 
 #### Modify Server Side Configuration
 
@@ -350,15 +349,15 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 
 #### Client Side Software Installation
 
-As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
+As for now, WireGuard is supported over a variety of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
 
 #### Test Connection
 
 To test that the server works run `$ wg-quick up wg0` to bring up the interface. Running `$ wg-quick down` will bring the interface down.
 
-Copy the client.conf from the VPS Server to your Wireguard Client Software, if everything has been setup properly, you should be connected, and see the network traffic.
+Copy the client.conf from the VPS Server to your WireGuard Client Software, if everything has been setup properly, you should be connected, and see the network traffic.
 
-Type the following command on your Wireguard Server to ensure the connection is active and stable:
+Type the following command on your WireGuard Server to ensure the connection is active and stable:
 
 ```bash
 $ wg
@@ -384,17 +383,17 @@ $ ping 10.10.10.85
 
 ![](https://github.com/yqlbu/wireguard-proxy/blob/main/images/IMAGE%202020-12-06%2018:22:48.jpg?raw=true)
 
-If all the configuration has been setup correctly, you should see that the VPS server is connected to the home network via the Wireguard VPN tunnel
+If all the configuration has been setup correctly, you should see that the VPS server is connected to the home network via the WireGuard VPN tunnel
 
 ---
 
 ### Network Address Translation
 
-#### Wireguard NAT Workflow
+#### WireGuard NAT Workflow
 
-From the above configuration, noted that `AllowIPs` is recognized as the routing rules within the Wireguard Virtual Network. It basically refers to the following:
+From the above configuration, noted that `AllowIPs` is recognized as the routing rules within the WireGuard Virtual Network. It basically refers to the following:
 
-- When the destination of data package is destinated to the `AllowIPs` networks, the package will be sent via the Wireguard VPN tunnel
+- When the destination of data package is designated to the `AllowIPs` networks, the package will be sent via the Wireguard VPN tunnel
 - When the destination of data package is not destinated to the `AllowIPs` networks, the package will be dropped instead
 
 ```shell
@@ -444,7 +443,7 @@ Notes:
 #### Multiple LAN NAT Support
 
 If you want to configure more than one LAN in your local network, you may take
-[Wireguard NAT Workflow](#wireguard-nat-workflow) as a reference and modify the Peer configuration on `/etc/wireguard/wg0.conf` as the template shown below:
+[WireGuard NAT Workflow](#wireguard-nat-workflow) as a reference and modify the Peer configuration on `/etc/wireguard/wg0.conf` as the template shown below:
 
 template
 

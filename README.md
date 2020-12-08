@@ -10,7 +10,7 @@
 
 \*\*\* Update Time: 2020/12/06
 
-This repo aims to give you clear instructions on how to install, config, and use wireguard in your local network. The Wiki below will guide you to deploy [Wireguard Server](https://www.wireguard.com/) on the Cloud.
+This repo aims to give you clear instructions on how to install, config, and use wireguard in your local network. The Wiki below will guide you how to deploy [WireGuard Server](https://www.wireguard.com/) on the Cloud.
 
 ## Introduction
 
@@ -34,3 +34,7 @@ As for now, Wireguard is supported over a varity of platforms. The software is n
 ## Telegram Groupchat
 
 - [UNRAID (CN) Discussion](https://t.me/unraid_zh)
+
+## Reference
+
+- [Deploy WireGuard on UNRAID (CN)](https://cn.jwtechtips.top/archives/237)
