@@ -8,7 +8,7 @@
 
 \*\*\* Author: Kevin Yu
 
-\*\*\* Update Time: 2020/12/06
+\*\*\* Update Time: 2021/04/21
 
 This repo aims to give you clear instructions on how to install, config, and use wireguard in your local network. The Wiki below will guide you how to deploy [WireGuard Server](https://www.wireguard.com/) on the Cloud.
 
