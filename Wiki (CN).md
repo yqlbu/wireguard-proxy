@@ -133,6 +133,8 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 上面的规则是允许 WireGuard 从您的家庭网络到wg0虚拟网络接口接收任何流量，以便Wireguard在该虚拟网络（wg0）中创建的任何对等链路方都可以相互访问。在这里，您可能需要修改（ens18）您的物理网络接口，例如（eth0）（注:不同的操作系统网络接口有不同的命名规则，根据您操作系统实际的命名情况而进行调整）
 
+---
+
 ### 设置自动启动
 
 打开Wireguard服务并在你承载wireguard服务的服务器引导时自动启动
@@ -162,6 +164,8 @@ $ sysctl -w net.ipv4.ip_forward=1
 $ reboot
 $ sysctl -p
 ```
+
+---
 
 ### 客户端软件安装
 
