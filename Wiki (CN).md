@@ -438,7 +438,7 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 确保需要共享 nat 的 wireguard 节点 ip 转发已开启，编辑`/etc/sysctl.conf`，将下面的这行的注释去掉
 
 ```bash
-$ net.ipv4.ip_forward=1
+# net.ipv4.ip_forward=1
 ```
 
 您也可以每次开机手动激活ipv4转发规则
