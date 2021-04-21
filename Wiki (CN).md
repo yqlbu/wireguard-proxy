@@ -1,8 +1,8 @@
 # 前言
 
-一款帮你轻松连接回家的神器
+一款帮你轻松连接回家的代理神器
 
-本教程搭建和测试基于Ubuntu 18.04系统，在云上搭建，VPS 提供商为搬瓦工。wireguard应该可以在其他的云服务商所提供的其他LINUX发行版系统上运行，但是需要做一些细节上的调整。
+本教程搭建和测试基于Ubuntu 18.04系统，在云上搭建，VPS 提供商为搬瓦工。WireGuard 也可以在其他的云服务商所提供的其他 Linux 发行版系统上运行，但是需要做一些细节上的调整。
 
  本教程将引导您知道:当您外出时，如何通过 wireguard-proxy 将手机，平板电脑或笔记本电脑等设备连接到家庭网络。
 
@@ -46,7 +46,7 @@
 
 ## 快速部署
 
-将 WireGuard 部署到您的VPS上
+### 将 WireGuard 部署到您的VPS上
 
 ```bash
 $ sudo apt-get update && apt-get upgrade -y
@@ -122,11 +122,11 @@ PostUp=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o e
 PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens18 -j MASQUERADE;
 ```
 
+注释：
+
 上面的规则是允许 WireGuard 从您的家庭网络到wg0虚拟网络接口接收任何流量，以便Wireguard在该虚拟网络（wg0）中创建的任何对等链路方都可以相互访问。在这里，您可能需要修改（ens18）您的物理网络接口，例如（eth0）（注:不同的操作系统网络接口有不同的命名规则，根据您操作系统实际的命名情况而进行调整）
 
-客户端软件安装
-
-至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在 [安装页面](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
+### 设置自动启动
 
 打开Wireguard服务并在你承载wireguard服务的服务器引导时自动启动
 
@@ -135,7 +135,90 @@ $ wg-quick up wg0
 $ systemctl enable wg-quick@wg0
 ```
 
-测试连接
+### 激活ipv4转发规则
+
+确保需要共享 nat 的 wireguard 节点 ip 转发已开启，编辑`/etc/sysctl.conf`，将下面的这行的注释去掉
+
+```bash
+$ net.ipv4.ip_forward=1
+```
+
+您也可以每次开机手动激活ipv4转发规则
+
+```bash
+$ sysctl -w net.ipv4.ip_forward=1
+```
+
+重启并来激活上述规则
+
+```
+$ reboot
+$ sysctl -p
+```
+
+### 客户端软件安装
+
+至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在 [安装页面](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
+
+### 配置移动客户端
+
+移动客户端私钥不同于服务器私钥，您可以运行以下命令来生成一对新的公钥和私钥：
+
+```bash
+$ wg genkey | tee privatekey_client | wg pubkey > publickey_client
+$ cat privatekey_client
+$ cat publickey_client
+```
+
+创建该路径文件` /etc/wireguard/client_mobile.conf`
+
+```bash
+$ vim /etc/wireguard/client_mobile.conf
+```
+
+该文件模板如下：
+
+```config
+[Interface]
+PrivateKey = <Client Private Key Goes Here>
+Address = 10.77.0.3/24
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = <Server Public Key Goes Here>
+Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+```
+
+在服务器端更新新的Peer配置：
+
+```
+[Interface]
+PrivateKey = <Your Private Key Goes Here>
+Address = 10.77.0.1/24 <Virtual LAN Address>
+ListenPort = 51820 <Custom Port>
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Private Key Goes Here>
+AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
+# Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+
+[Peer]
+# client_mobile
+PublicKey = <Client Private Key Goes Here>
+AllowedIPs = 10.77.0.3/24
+```
+
+最后，将配置好的`client_mobile.conf`文件导出至对应的移动客户端即可。若有多个移动客户端需求，则可以生成多个密钥对，并在服务端更新即可。
+
+### 测试连接
 
 将 `client.conf` 从VPS服务器中复制到 WireGuard 客户端软件中，如果一切均已正确设置，则你的客户端应该已连接，并可以看到客户端开始有网络流量。
 
@@ -163,7 +246,7 @@ peer: <Peer Public Key>
 
 在开始使用前，你需要准备的东西如下：
 
-- 来自云服务提供商的VPS
+- 来自云服务提供商的 VPS
 - 您想从家庭网络外部访问的设备（例如NAS）
 
 这个技术能让您做什么
@@ -176,13 +259,13 @@ peer: <Peer Public Key>
 
 注释：
 
-- 1.1.1.1是VPS的公共IP（由Cloud Service Provider提供）
-- 10.77.0.0/24是 WireGuard Server创建的虚拟本地网络
-- 10.10.10.0/24是本地家庭网络
+- `1.1.1.1` 是 VPS 的公共 IP（由云服务供应商提供）
+- `10.77.0.0/24` 是 WireGuard Server 创建的虚拟本地网络
+- `10.10.10.0/24` 是本地家庭网络
 
 ### 服务器设置
 
-从您的云服务提供商提供的VM实例进行安装。本教程是使用 [Bandwagon](https://bandwagonhost.com/aff.php?aff=63096) VPS Hosting 上的Ubuntu 18.04创建和测试的。WireGuard 也可以在其他的云服务商所提供的其他LINUX发行版系统上运行。
+从您的云服务供应商商提供的VM实例进行安装。本教程是使用 [Bandwagon](https://bandwagonhost.com/aff.php?aff=63096) VPS Hosting 上的Ubuntu 18.04创建和测试的。WireGuard 也可以在其他的云服务商所提供的其他 Linux 发行版系统上运行。
 
 系统版本预览：
 
@@ -339,6 +422,27 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 # Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 ```
 
+#### 激活ipv4转发规则
+
+确保需要共享 nat 的 wireguard 节点 ip 转发已开启，编辑`/etc/sysctl.conf`，将下面的这行的注释去掉
+
+```bash
+$ net.ipv4.ip_forward=1
+```
+
+您也可以每次开机手动激活ipv4转发规则
+
+```bash
+$ sysctl -w net.ipv4.ip_forward=1
+```
+
+重启并来激活上述规则
+
+```
+$ reboot
+$ sysctl -p
+```
+
 #### 客户端软件安装
 
 至今为止，多种不同的平台已经支持Wireguard 。例如 Windows，macOS，Android，iOS 和许多 Linux 发行版系统。您可以在 [安装页面](https://www.wireguard.com/install/)上找到与您的操作系统匹配的客户端软件。
@@ -412,11 +516,41 @@ $ ping 10.10.10.85
 10.10.10.0/24 (Home Network)
 ```
 
-#### 多链路对等连接
+#### 多链路对等连接（多设备连接）
 
-您可以根据实际需要添加任意数量的对等链接方，只需确保将所有对等方添加到VPS服务器中，如下所示：
+您可以根据实际需要添加任意数量的对等链接方，只需确保将所有对等方添加到VPS服务器中：
 
-模板
+移动客户端私钥不同于服务器私钥，您可以运行以下命令来生成一对新的公钥和私钥：
+
+```bash
+$ wg genkey | tee privatekey_client | wg pubkey > publickey_client
+$ cat privatekey_client
+$ cat publickey_client
+```
+
+创建该路径文件` /etc/wireguard/client_mobile.conf`
+
+```bash
+$ vim /etc/wireguard/client_mobile.conf
+```
+
+该文件模板如下：
+
+```config
+[Interface]
+PrivateKey = <Client Private Key Goes Here>
+Address = 10.77.0.3/24
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = <Server Public Key Goes Here>
+Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+```
+
+更新VPS服务器端的配置，具体模版如下：
 
 ```config
 [Interface]
@@ -430,12 +564,12 @@ MTU = 1420
 
 [Peer]
 # Device One
-PublicKey =
+PublicKey = <Client Private Key Goes Here>
 AllowedIPs = 10.77.0.2/24
 
 [Peer]
 # Device Two
-PublicKey =
+PublicKey = <Client Private Key Goes Here>
 AllowedIPs = 10.77.0.3/24
 ```
 
@@ -449,8 +583,6 @@ AllowedIPs = 10.77.0.3/24
 如果要在本地网络中配置多个LAN，则可以将 [WireGuard NAT工作流](#工作流程) 作为参考，并修改Peer配置，`/etc/wireguard/wg0.conf`如下所示：
 
 配置模板
-
-
 
 ```config
 [Interface]
@@ -472,8 +604,6 @@ AllowedIPs = 10.77.0.2/32
 PublicKey =
 AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs with comma to split them>
 ```
-
-
 
 注：
 
