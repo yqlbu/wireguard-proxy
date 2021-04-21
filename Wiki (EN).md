@@ -23,6 +23,12 @@ View details about the workflow [here](#workflow)
 ## Table of Contents
 
 - [Quick Deploy](#quick-deploy)
+  - [Deploy Wireguard on your VPS](#deploy-wireguard-on-your-vps)
+  - [Enable Auto Start](#enable-auto-start)
+  - [Enable IP Forwarding](#enable-ip-forwarding)
+  - [Install Client Software](#install-client-software)
+  - [Configure Mobile Client](#configure-mobile-client)
+  - [Test Connection](#test-connection)
 - [Documentation](#documentation)
 
   - [Get Ready](#get-ready)
@@ -35,17 +41,19 @@ View details about the workflow [here](#workflow)
   - [Client Setup](#client-setup)
     - [Client Side Configuration](#client-side-configuration)
     - [Modify Server Side Configuration](#modify-server-side-configuration)
+    - [IP Forwarding Rule](#ip-forwarding-rule)
     - [Client Side Software Installation](#client-side-software-installation)
+    - [Test Connection](#test-connection)
   - [Network Address Translation](#network-address-translation)
     - [Wireguard NAT Workflow](#wireguard-nat-workflow)
-    - [Multiple Peer Connections](#multiple-peer-connections)
+    - [Multiple Peer Connections (Multiple Device Connections)](#multiple-peer-connections-multiple-device-connections)
     - [Multiple LAN NAT Support](#multiple-lan-nat-support)
 - [Reference](#reference)
 - [License](#license)
 
 ## Quick Deploy
 
-Deploy Wireguard on your VPS
+### Deploy Wireguard on your VPS
 
 ```bash
 $ sudo apt-get update && apt-get upgrade -y
@@ -127,9 +135,7 @@ The rules above are to allow WireGuard to take any traffic from your home networ
 
 ---
 
-Install Client Software
-
-As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
+### Enable Auto Start
 
 Turn on Wireguard and enable auto start at boot on your Wireguard Server
 
@@ -138,7 +144,90 @@ $ wg-quick up wg0
 $ systemctl enable wg-quick@wg0
 ```
 
-Test Connection
+### Enable IP Forwarding
+
+Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file `/etc/sysctl.conf` and change and uncomment to the line that says `net.ipv4.ip_forward=1`
+
+```bash
+# net.ipv4.ip_forward=1
+```
+
+You may also manually apply the forwarding rule
+
+```bash
+$ sysctl -w net.ipv4.ip_forward=1
+```
+
+Reboot and apply the rule
+
+```
+$ reboot
+$ sysctl -p
+```
+
+### Install Client Software
+
+As for now, Wireguard is supported over a varity of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
+
+### Configure Mobile Client
+
+Since the key pairs for mobile client is different from that of the Client and the Server, you may use the following commands to generate a new public and private key pair.
+
+```bash
+$ wg genkey | tee privatekey_client | wg pubkey > publickey_client
+$ cat privatekey_client
+$ cat publickey_client
+```
+
+Create and edit ` /etc/wireguard/client_mobile.conf`
+
+```bash
+$ vim /etc/wireguard/client_mobile.conf
+```
+
+Template：
+
+```config
+[Interface]
+PrivateKey = <Client Private Key Goes Here>
+Address = 10.77.0.3/24
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = <Server Public Key Goes Here>
+Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+```
+
+Update the peer configuration on the server side：
+
+```
+[Interface]
+PrivateKey = <Your Private Key Goes Here>
+Address = 10.77.0.1/24 <Virtual LAN Address>
+ListenPort = 51820 <Custom Port>
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Private Key Goes Here>
+AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
+# Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+
+[Peer]
+# client_mobile
+PublicKey = <Client Private Key Goes Here>
+AllowedIPs = 10.77.0.3/24
+```
+
+Lastly, export your `client_mobile.conf` to the mobile client software. If you wants to have multiple device connections, you may create many more mobile_client conf and update the peer configuration as shown above on the server side.
+
+### Test Connection
 
 Copy the client.conf to your Wireguard Client Software, if everything has been setup properly, you should be connected, and see the network traffic.
 
@@ -179,9 +268,9 @@ What to achieve
 
 Notes:
 
-- 1.1.1.1 is the Public IP of the VPS (Provided by Cloud Service Provider)
-- 10.77.0.0/24 is the virtual local network created by Wireguard Server
-- 10.10.10.0/24 is the local home network
+- `1.1.1.1` is the Public IP of the VPS (Provided by Cloud Service Provider)
+- `10.77.0.0/24` is the virtual local network created by Wireguard Server
+- `10.10.10.0/24` is the local home network
 
 ---
 
@@ -347,6 +436,27 @@ AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
 # Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 ```
 
+#### IP Forwarding Rule
+
+Next we need to enable IP Forwarding. IP forwarding is the ability for an operating system to accept incoming network packets on one interface, recognize that it is not meant for the system itself, but that it should be passed on to another network. Edit the file `/etc/sysctl.conf` and change and uncomment to the line that says `net.ipv4.ip_forward=1`
+
+```bash
+# net.ipv4.ip_forward=1
+```
+
+You may also manually apply the forwarding rule
+
+```bash
+$ sysctl -w net.ipv4.ip_forward=1
+```
+
+Reboot and apply the rule
+
+```
+$ reboot
+$ sysctl -p
+```
+
 #### Client Side Software Installation
 
 As for now, WireGuard is supported over a variety of platforms. The software is now supported Windows, macOS, Android, iOS, and many Linux Distributed Systems. You may find the client software that matches your operating system on the [Installation Page](https://www.wireguard.com/install/).
@@ -408,11 +518,41 @@ From the above configuration, noted that `AllowIPs` is recognized as the routing
 10.10.10.0/24 (Home Network)
 ```
 
-#### Multiple Peer Connections
+#### Multiple Peer Connections (Multiple Device Connections)
 
-You may add as many peers as you want, just make sure to add them all in the VPS server as the template shown below:
+You may add as many peers as you want, just make sure to add them all in the VPS server as the followings:
 
-template
+Since the key pairs for mobile client is different from that of the Client and the Server, you may use the following commands to generate a new public and private key pair.
+
+```bash
+$ wg genkey | tee privatekey_client | wg pubkey > publickey_client
+$ cat privatekey_client
+$ cat publickey_client
+```
+
+Create and Edit` /etc/wireguard/client_mobile.conf`
+
+```bash
+$ vim /etc/wireguard/client_mobile.conf
+```
+
+Template:
+
+```config
+[Interface]
+PrivateKey = <Client Private Key Goes Here>
+Address = 10.77.0.3/24
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = <Server Public Key Goes Here>
+Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+```
+
+Update the configuration on the server side as shown below:
 
 ```config
 [Interface]
@@ -445,7 +585,7 @@ Notes:
 If you want to configure more than one LAN in your local network, you may take
 [WireGuard NAT Workflow](#wireguard-nat-workflow) as a reference and modify the Peer configuration on `/etc/wireguard/wg0.conf` as the template shown below:
 
-template
+template:
 
 ```config
 [Interface]
@@ -475,4 +615,4 @@ AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs 
 
 ## License
 
-[MIT License](https://github.com/yqlbu/wireguard-proxy/blob/main/LICENSE)
+[MIT License
