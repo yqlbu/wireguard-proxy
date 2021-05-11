@@ -112,7 +112,7 @@ Template
 ```
 [Interface]
 PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
-Address = 172.8.0.1
+Address = 10.77.0.1/24
 ListenPort = 51820
 
 PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
@@ -419,7 +419,7 @@ Template
 ```
 [Interface]
 PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
-Address = 172.8.0.1
+Address = 10.77.0.1/24
 ListenPort = 51820
 
 PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
