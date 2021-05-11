@@ -45,3 +45,4 @@ As for now, Wireguard is supported over a varity of platforms. The software is n
 - [Getting Started Building Your Own Wireguard VPN Server](https://forums.lawrencesystems.com/t/getting-started-building-your-own-wireguard-vpn-server/7425)
 - [How to Set Up a Firewall with FirewallD on CentOS 7](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/)
 - [Wireguard Dashboard](https://github.com/donaldzou/wireguard-dashboard)
+- [通过 Wireguard 构建 NAT to NAT VPN](https://anyisalin.github.io/2018/11/21/fast-flexible-nat-to-nat-vpn-wireguard/)
