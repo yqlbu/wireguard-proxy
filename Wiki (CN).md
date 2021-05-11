@@ -38,6 +38,7 @@
     - [安装](#安装)
     - [创建密钥](#创建密钥)
     - [服务端设置](#服务器端配置)
+    - [(可选) 防火墙高级配置]((可选)-防火墙高级配置)
   - [客户端设置](#客户端设置)
     - [客户端配置](#客户端配置)
     - [确认服务端配置](#修改服务器端配置)
@@ -131,6 +132,39 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 注释：
 
 上面的规则是允许 WireGuard 从您的家庭网络到wg0虚拟网络接口接收任何流量，以便Wireguard在该虚拟网络（wg0）中创建的任何对等链路方都可以相互访问。在这里，您可能需要修改（ens18）您的物理网络接口，例如（eth0）（注:不同的操作系统网络接口有不同的命名规则，根据您操作系统实际的命名情况而进行调整）
+
+**(可选) 防火墙高级配置:**
+
+用`firewalld`配置防火墙。[Firewalld](https://Firewalld . org/)是一个完整的防火墙解决方案，它管理系统的iptables规则，并为在这些规则上操作提供D-Bus接口。从CentOS 7开始，FirewallD取代iptables成为默认的防火墙管理工具。
+
+安装 `Firewalld`
+
+```
+$ sudo apt install firewalld -y
+```
+
+模板
+
+```
+[Interface]
+PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
+Address = 172.8.0.1
+ListenPort = 51820
+
+PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
+
+PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=internal --remove-interface=wg0 && firewall-cmd --zone=internal --remove-service=dns && firewall-cmd --zone=internal --remove-service=http && firewall-cmd --zone=public --remove-masquerade && firewall-cmd --zone=internal --remove-masquerade
+
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+```
+
+您可以在 [这里](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/) 找到关于 `PortUp` 和 `PortDown` 的防火墙-cmd配置的说明。
 
 ---
 
@@ -368,6 +402,39 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 ```
 
 上面的规则是允许Wireguard从您的家庭网络到wg0虚拟网络接口接收任何流量，以便Wireguard在该虚拟网络（wg0）中创建的任何对等链路方都可以相互访问。在这里，您可能需要修改（ens18）您的物理网络接口，例如（eth0）（注:不同的操作系统网络接口有不同的命名规则，根据您操作系统实际的命名情况而进行调整）
+
+#### (可选) 防火墙高级配置
+
+用`firewalld`配置防火墙。[Firewalld](https://Firewalld . org/)是一个完整的防火墙解决方案，它管理系统的iptables规则，并为在这些规则上操作提供D-Bus接口。从CentOS 7开始，FirewallD取代iptables成为默认的防火墙管理工具。
+
+安装 `Firewalld`
+
+```
+$ sudo apt install firewalld -y
+```
+
+模板
+
+```
+[Interface]
+PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
+Address = 172.8.0.1
+ListenPort = 51820
+
+PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
+
+PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=internal --remove-interface=wg0 && firewall-cmd --zone=internal --remove-service=dns && firewall-cmd --zone=internal --remove-service=http && firewall-cmd --zone=public --remove-masquerade && firewall-cmd --zone=internal --remove-masquerade
+
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+```
+
+您可以在 [这里](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/) 找到关于 `PortUp` 和 `PortDown` 的防火墙-cmd配置的说明。
 
 ### 客户端设置
 
@@ -621,6 +688,7 @@ AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs 
 
 - [WireGuard 官方网站](https://www.wireguard.com/)
 - [YouTube上Lawrencesystems的视频教程](https://forums.lawrencesystems.com/t/getting-started-building-your-own-wireguard-vpn-server/7425)
+- [通过 Wireguard 构建 NAT to NAT VPN](https://anyisalin.github.io/2018/11/21/fast-flexible-nat-to-nat-vpn-wireguard/)
 
 ## 许可
 
