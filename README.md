@@ -16,6 +16,10 @@ This repo aims to give you clear instructions on how to install, config, and use
 
 [WireGuard](https://www.wireguard.com/) is a free and open-source software application and communication protocol that implements virtual private network techniques to create secure point-to-point connections in routed or bridged configurations.
 
+## Flowchart
+
+![](https://github.com/yqlbu/wireguard-proxy/raw/main/images/Screen%20Shot%202020-12-06%20at%206.48.17%20PM.png?raw=true)
+
 ## Docs
 
 - [Wiki (EN)](https://github.com/yqlbu/wireguard-proxy/wiki/Wiki-(EN))
