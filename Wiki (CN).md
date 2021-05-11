@@ -405,7 +405,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 #### (可选) 防火墙高级配置
 
-用`firewalld`配置防火墙。[Firewalld](https://Firewalld . org/)是一个完整的防火墙解决方案，它管理系统的iptables规则，并为在这些规则上操作提供D-Bus接口。从CentOS 7开始，FirewallD取代iptables成为默认的防火墙管理工具。
+用`firewalld`配置防火墙。[Firewalld](https://Firewalld.org/)是一个完整的防火墙解决方案，它管理系统的iptables规则，并为在这些规则上操作提供D-Bus接口。从CentOS 7开始，FirewallD取代iptables成为默认的防火墙管理工具。
 
 安装 `Firewalld`
 
