@@ -44,3 +44,4 @@ As for now, Wireguard is supported over a varity of platforms. The software is n
 - [Deploy WireGuard on UNRAID (CN)](https://cn.jwtechtips.top/archives/237)
 - [Getting Started Building Your Own Wireguard VPN Server](https://forums.lawrencesystems.com/t/getting-started-building-your-own-wireguard-vpn-server/7425)
 - [How to Set Up a Firewall with FirewallD on CentOS 7](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/)
+- [Wireguard Dashboard](https://github.com/donaldzou/wireguard-dashboard)
