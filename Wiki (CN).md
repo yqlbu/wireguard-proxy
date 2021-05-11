@@ -57,7 +57,7 @@
 
 ```bash
 $ sudo apt-get update && apt-get upgrade -y
-$ sudo apt-get install wireguard -y
+$ sudo apt-get install wireguard openresolv -y
 $ wg genkey | tee privatekey | wg pubkey > publickey
 $ cat privatekey
 $ cat publickey
@@ -76,16 +76,15 @@ $ vim /etc/wireguard/wg0.conf
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
 ListenPort = 51820 <Custom Port>
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 DNS = 8.8.8.8
 MTU = 1420
 
 [Peer]
 # client
-PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
-# Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 ```
 
 注释：
@@ -118,7 +117,7 @@ MTU = 1420
 [Peer]
 PublicKey = <Server Public Key Goes Here>
 Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
-AllowedIPs = 10.77.0.0/24
+AllowedIPs = 10.77.0.2/24
 PersistentKeepalive = 25
 ```
 
@@ -210,21 +209,20 @@ PersistentKeepalive = 25
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
 ListenPort = 51820 <Custom Port>
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 DNS = 8.8.8.8
 MTU = 1420
 
 [Peer]
 # client
 PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
-# Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 
 [Peer]
 # client_mobile
 PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.3/24
+AllowedIPs = 10.77.0.3/32
 ```
 
 最后，将配置好的`client_mobile.conf`文件导出至对应的移动客户端即可。若有多个移动客户端需求，则可以生成多个密钥对，并在服务端更新即可。
@@ -315,7 +313,7 @@ $ apt-get update && apt-get upgrade -y
 安装 WireGuard
 
 ```bash
-$ sudo apt-get install wireguard -y
+$ sudo apt-get install wireguard openresolv -y
 ```
 
 #### 设置密钥对
@@ -356,8 +354,8 @@ $ vim /etc/wireguard/wg0.conf
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
 ListenPort = 51820 <Custom Port>
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 DNS = 8.8.8.8
 MTU = 1420
 ```
@@ -399,7 +397,7 @@ MTU = 1420
 [Peer]
 PublicKey = <Server Public Key Goes Here>
 Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
-AllowedIPs = 10.77.0.0/24
+AllowedIPs = 10.77.0.2/24
 PersistentKeepalive = 25
 ```
 
@@ -421,16 +419,15 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 PrivateKey = <Your Private Key Goes Here>
 Address = 10.77.0.1/24 <Virtual LAN Address>
 ListenPort = 51820 <Custom Port>
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 DNS = 8.8.8.8
 MTU = 1420
 
 [Peer]
 # client
-PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.2/24 <You may configure as many LANs as you want>
-# Allowed IPs = 10.77.0.2/24, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
 ```
 
 #### 开启转发规则
@@ -565,8 +562,8 @@ PersistentKeepalive = 25
 [Interface]
 PrivateKey =
 Address = 10.77.0.1/24
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERA$
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERA$
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 ListenPort =
 DNS = 8.8.8.8
 MTU = 1420
@@ -574,12 +571,12 @@ MTU = 1420
 [Peer]
 # Device One
 PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.2/24
+AllowedIPs = 10.77.0.2/32
 
 [Peer]
 # Device Two
 PublicKey = <Client Private Key Goes Here>
-AllowedIPs = 10.77.0.3/24
+AllowedIPs = 10.77.0.3/32
 ```
 
 注释：
@@ -623,7 +620,7 @@ AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs 
 ## 参考
 
 - [WireGuard 官方网站](https://www.wireguard.com/)
-- [YouTube上Lawrencesystems的视频教程](https://forums.lawrencesystems.com/uploads/default/original/2X/e/e0ebbcd8936a498c8fe3bc88f1c6b7f7333ce9cf.jpeg)
+- [YouTube上Lawrencesystems的视频教程](https://forums.lawrencesystems.com/t/getting-started-building-your-own-wireguard-vpn-server/7425)
 
 ## 许可
 
