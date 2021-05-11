@@ -1,4 +1,4 @@
-# wireguard-proxy
+# 📡 wireguard-proxy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](<https://img.shields.io/static/v1?label=Systems&message=Linux(x86)&color=orange>)
