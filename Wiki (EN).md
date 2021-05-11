@@ -37,7 +37,7 @@ View details about the workflow [here](#workflow)
     - [Installation](#installation)
     - [Generate Keys](#generate-keys)
     - [Server Side Configuration](#server-side-configuration)
-    - [Test Connection](#test-connection)
+    - [(Optional) Firewalld Configuration](#optional-firewalld-configuration)
   - [Client Setup](#client-setup)
     - [Client Side Configuration](#client-side-configuration)
     - [Modify Server Side Configuration](#modify-server-side-configuration)
@@ -96,6 +96,39 @@ $ wg genkey | tee privatekey_client | wg pubkey > publickey_client
 $ cat privatekey_client
 $ cat publickey_client
 ```
+
+**(Optional) Alternatives:**
+
+Configure the fireguard with `firewalld`. [FirewallD](https://firewalld.org/) is a complete firewall solution that manages the system’s iptables rules and provides a D-Bus interface for operating on them. Starting with CentOS 7, FirewallD replaces iptables as the default firewall management tool.
+
+Install Firewalld
+
+```
+$ sudo apt install firewalld -y
+```
+
+Template
+
+```
+[Interface]
+PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
+Address = 172.8.0.1
+ListenPort = 51820
+
+PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
+
+PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=internal --remove-interface=wg0 && firewall-cmd --zone=internal --remove-service=dns && firewall-cmd --zone=internal --remove-service=http && firewall-cmd --zone=public --remove-masquerade && firewall-cmd --zone=internal --remove-masquerade
+
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+```
+
+You may find the explanations about the firewall-cmd configuration for `PostUp` and `PostDown` [HERE](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/)
 
 ---
 
@@ -371,6 +404,39 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 The rule above is to allow WireGuard to take any traffic from your home network to the wg0 virtual network interface so that any peer within that virtual network (wg0) created by WireGuard can visit each other. Here, you may need to modify (ens18) to your physical network interface such as (eth0)
 
+#### (Optional) Firewalld Configuration
+
+[FirewallD](https://firewalld.org/) is a complete firewall solution that manages the system’s iptables rules and provides a D-Bus interface for operating on them. Starting with CentOS 7, FirewallD replaces iptables as the default firewall management tool.
+
+Install Firewalld
+
+```
+$ sudo apt install firewalld -y
+```
+
+Template
+
+```
+[Interface]
+PrivateKey = QO4hRctHejfP9MD+j6IXzlskPwW3+NwoMQhxyHVGYFM=
+Address = 172.8.0.1
+ListenPort = 51820
+
+PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=internal --add-interface=wg0 && firewall-cmd --zone=internal --add-service=dns && firewall-cmd --zone=internal --add-service=http && firewall-cmd --zone=public --add-masquerade && firewall-cmd --zone=internal --add-masquerade
+
+PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=internal --remove-interface=wg0 && firewall-cmd --zone=internal --remove-service=dns && firewall-cmd --zone=internal --remove-service=http && firewall-cmd --zone=public --remove-masquerade && firewall-cmd --zone=internal --remove-masquerade
+
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+# client
+PublicKey = <Client Public Key Goes Here>
+Allowed IPs = 10.77.0.2/32, 10.10.10.0/24 <10.10.10.0/24 is the LAN in your home network>
+```
+
+You may find the explanations about the firewall-cmd configuration for `PostUp` and `PostDown` [HERE
+
 ---
 
 ### Client Setup
@@ -451,8 +517,7 @@ $ sysctl -w net.ipv4.ip_forward=1
 Reboot and apply the rule
 
 ```
-$ reboot
-$ sysctl -p
+$ reboot$ sysctl -p
 ```
 
 #### Client Side Software Installation
@@ -468,19 +533,7 @@ Copy the client.conf from the VPS Server to your WireGuard Client Software, if e
 Type the following command on your WireGuard Server to ensure the connection is active and stable:
 
 ```bash
-$ wg
-
-# output
-interface: wg0
-  public key: <Server Public Key>
-  private key: (hidden)
-  listening port: 13789
-
-peer: <Peer Public Key>
-  endpoint: <Server IP>:<Custom Port>
-  allowed ips: 10.77.0.2/32, 10.10.10.0/24
-  latest handshake: 54 seconds ago
-  transfer: 9.52 MiB received, 4.01 MiB sent
+$ wg# outputinterface: wg0  public key: <Server Public Key>  private key: (hidden)  listening port: 13789peer: <Peer Public Key>  endpoint: <Server IP>:<Custom Port>  allowed ips: 10.77.0.2/32, 10.10.10.0/24  latest handshake: 54 seconds ago  transfer: 9.52 MiB received, 4.01 MiB sent
 ```
 
 Now test the connection from the VPS to the home network
@@ -505,15 +558,7 @@ From the above configuration, noted that `AllowIPs` is recognized as the routing
 - When the destination of data package is not destinated to the `AllowIPs` networks, the package will be dropped instead
 
 ```shell
-10.77.0.1 (Wireguard Server) <--------+ 10.77.0.X (Wireguard Client)
-              +
-              |
-              v
-10.77.0.2 (NAS or any other devices within the home network)
-              +
-              |
-              v
-10.10.10.0/24 (Home Network)
+10.77.0.1 (Wireguard Server) <--------+ 10.77.0.X (Wireguard Client)              +              |              v10.77.0.2 (NAS or any other devices within the home network)              +              |              v10.10.10.0/24 (Home Network)
 ```
 
 #### Multiple Peer Connections (Multiple Device Connections)
@@ -523,9 +568,7 @@ You may add as many peers as you want, just make sure to add them all in the VPS
 Since the key pairs for mobile client is different from that of the Client and the Server, you may use the following commands to generate a new public and private key pair.
 
 ```bash
-$ wg genkey | tee privatekey_client | wg pubkey > publickey_client
-$ cat privatekey_client
-$ cat publickey_client
+$ wg genkey | tee privatekey_client | wg pubkey > publickey_client$ cat privatekey_client$ cat publickey_client
 ```
 
 Create and Edit` /etc/wireguard/client_mobile.conf`
@@ -537,40 +580,13 @@ $ vim /etc/wireguard/client_mobile.conf
 Template:
 
 ```config
-[Interface]
-PrivateKey = <Client Private Key Goes Here>
-Address = 10.77.0.3/24
-DNS = 8.8.8.8
-MTU = 1420
-
-[Peer]
-PublicKey = <Server Public Key Goes Here>
-Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>
-AllowedIPs = 0.0.0.0/0, ::0/0
-PersistentKeepalive = 25
+[Interface]PrivateKey = <Client Private Key Goes Here>Address = 10.77.0.3/24DNS = 8.8.8.8MTU = 1420[Peer]PublicKey = <Server Public Key Goes Here>Endpoint = <Your VPS IP or domain goes here>:<Custom Port on wg0.conf>AllowedIPs = 0.0.0.0/0, ::0/0PersistentKeepalive = 25
 ```
 
 Update the configuration on the server side as shown below:
 
 ```config
-[Interface]
-PrivateKey =
-Address = 10.77.0.1/24
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-ListenPort =
-DNS = 8.8.8.8
-MTU = 1420
-
-[Peer]
-# Device One
-PublicKey =
-AllowedIPs = 10.77.0.2/32
-
-[Peer]
-# Device Two
-PublicKey =
-AllowedIPs = 10.77.0.3/32
+[Interface]PrivateKey =Address = 10.77.0.1/24PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADEPostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADEListenPort =DNS = 8.8.8.8MTU = 1420[Peer]# Device OnePublicKey =AllowedIPs = 10.77.0.2/32[Peer]# Device TwoPublicKey =AllowedIPs = 10.77.0.3/32
 ```
 
 Notes:
@@ -586,24 +602,7 @@ If you want to configure more than one LAN in your local network, you may take
 template:
 
 ```config
-[Interface]
-PrivateKey =
-Address = 10.77.0.1/24
-PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-ListenPort = 13789
-DNS = 8.8.8.8
-MTU = 1420
-
-[Peer]
-# Client One
-PublicKey =
-AllowedIPs = 10.77.0.2/32
-
-[Peer]
-# Client Two
-PublicKey =
-AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs with comma to split them>
+[Interface]PrivateKey =Address = 10.77.0.1/24PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADEPostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADEListenPort = 13789DNS = 8.8.8.8MTU = 1420[Peer]# Client OnePublicKey =AllowedIPs = 10.77.0.2/32[Peer]# Client TwoPublicKey =AllowedIPs = 10.77.0.3/32, 10.10.10.0/24, 10.20.0.0/24 <Where you add more LANs with comma to split them>
 ```
 
 ## Reference
