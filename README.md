@@ -46,3 +46,4 @@ As for now, Wireguard is supported over a varity of platforms. The software is n
 - [How to Set Up a Firewall with FirewallD on CentOS 7](https://linuxize.com/post/how-to-setup-a-firewall-with-firewalld-on-centos-7/)
 - [Wireguard Dashboard](https://github.com/donaldzou/wireguard-dashboard)
 - [通过 Wireguard 构建 NAT to NAT VPN](https://anyisalin.github.io/2018/11/21/fast-flexible-nat-to-nat-vpn-wireguard/)
+- [WireGuard VPN in the Cloud with Pi-hole DNS Resolver](https://autoize.com/wireguard-vpn-in-the-cloud-with-pi-hole-dns-resolver/)
