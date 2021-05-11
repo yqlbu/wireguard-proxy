@@ -97,7 +97,7 @@ $ cat privatekey_client
 $ cat publickey_client
 ```
 
-**(Optional) Alternatives:**
+**(Optional) Alternatives**
 
 Configure the fireguard with `firewalld`. [FirewallD](https://firewalld.org/) is a complete firewall solution that manages the system’s iptables rules and provides a D-Bus interface for operating on them. Starting with CentOS 7, FirewallD replaces iptables as the default firewall management tool.
 
