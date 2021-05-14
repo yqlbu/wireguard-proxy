@@ -105,6 +105,7 @@ Install Firewalld
 
 ```
 $ sudo apt install firewalld -y
+$ sudo systemctl enable firewalld
 ```
 
 Template
@@ -412,6 +413,7 @@ Install Firewalld
 
 ```
 $ sudo apt install firewalld -y
+$ sudo systemctl enable firewalld
 ```
 
 Template
