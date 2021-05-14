@@ -141,6 +141,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 ```
 $ sudo apt install firewalld -y
+$ sudo systemctl enable firewalld
 ```
 
 模板
@@ -411,6 +412,7 @@ PostDown=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o
 
 ```
 $ sudo apt install firewalld -y
+$ sudo systemctl enable firewalld
 ```
 
 模板
